@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class Login extends Component {
   constructor(props) {
@@ -56,6 +57,14 @@ export default class Login extends Component {
         >
           Jogar
         </button>
+        <Link to="/Configuration">
+          <button
+            type="submit"
+            data-testid="btn-settings"
+          >
+            Configurações
+          </button>
+        </Link>
       </div>
     );
   }
