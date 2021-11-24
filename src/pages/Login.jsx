@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionLogin } from '../redux/actions';
 import getToken from '../services/getToken';
@@ -71,6 +72,14 @@ class Login extends Component {
         >
           Jogar
         </button>
+        <Link to="/Configuration">
+          <button
+            type="submit"
+            data-testid="btn-settings"
+          >
+            Configurações
+          </button>
+        </Link>
       </div>
     );
   }
