@@ -6,23 +6,33 @@ export default class Login extends Component {
     this.state = {
       name: '',
       email: '',
+      isDisabled: true,
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.isButtonDisabled = this.isButtonDisabled.bind(this);
   }
 
   handleOnChange({ target: { name, value } }) {
-    this.setState({ [name]: value });
+    this.setState({ [name]: value }, () => this.isButtonDisabled());
+    
   }
 
   isButtonDisabled() {
     const { name, email } = this.state;
-    return name.length === 0 && email.length === 0;
+    if (name.length === 0 || email.length === 0){
+      this.setState({
+        isDisabled: true,
+      })
+    } else {
+      this.setState({
+        isDisabled: false,
+      })
+    };
   }
 
   render() {
     const { isButtonDisabled } = this;
-    const { name, email } = this.state;
+    const { name, email, isDisabled } = this.state;
     return (
       <div>
         <input
@@ -36,14 +46,14 @@ export default class Login extends Component {
         <input
           type="email"
           onChange={ this.handleOnChange }
-          email="email"
+          name="email"
           data-testid="input-gravatar-email"
           placeholder="Email"
           value={ email }
         />
         <button
           type="button"
-          disabled={ isButtonDisabled }
+          disabled={ isDisabled }
           data-testid="btn-play"
         >
           Jogar
