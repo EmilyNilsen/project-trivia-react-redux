@@ -27,7 +27,7 @@ class Login extends Component {
     setLogin(name, email);
     const token = await getToken();
     localStorage.setItem('token', token);
-    history.push('/jogo');
+    history.push('/game');
   }
 
   isButtonDisabled() {
