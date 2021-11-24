@@ -14,24 +14,22 @@ export default class Login extends Component {
 
   handleOnChange({ target: { name, value } }) {
     this.setState({ [name]: value }, () => this.isButtonDisabled());
-    
   }
 
   isButtonDisabled() {
     const { name, email } = this.state;
-    if (name.length === 0 || email.length === 0){
+    if (name.length === 0 || email.length === 0) {
       this.setState({
         isDisabled: true,
-      })
+      });
     } else {
       this.setState({
         isDisabled: false,
-      })
-    };
+      });
+    }
   }
 
   render() {
-    const { isButtonDisabled } = this;
     const { name, email, isDisabled } = this.state;
     return (
       <div>
