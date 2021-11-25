@@ -1,73 +1,77 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
+import Timer from '../components/timer';
+import AnswerButtons from '../components/AnswerButtons';
 
 class Game extends Component {
   constructor(props) {
     super(props);
 
-    const { email } = this.props;
-
     this.state = {
       score: 0,
       questionIndex: 0,
-      profilePictureLink: `https://www.gravatar.com/avatar/${MD5(email).toString()}`,
+      timer: new Timer(),
+      seconds: 30,
+      shouldSort: true,
     };
 
-    this.buildAnswersElement = this.buildAnswersElement.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
+    this.updateTimer = this.updateTimer.bind(this);
+  }
+
+  componentDidMount() {
+    const { updateTimer } = this;
+    const { timer } = this.state;
+
+    timer.startTimer(updateTimer);
+  }
+
+  componentWillUnmount() {
+    const { timer } = this.state;
+    timer.clearTimer();
+  }
+
+  updateTimer(seconds) {
+    this.setState({ shouldSort: false },
+      () => this.setState({ seconds }));
   }
 
   nextQuestion() {
-    this.setState(
-      (prevState) => ({ ...prevState, questionIndex: prevState.questionIndex + 1 }),
-    );
-  }
+    const { questionIndex, timer } = this.state;
 
-  buildAnswersElement() {
-    const { nextQuestion } = this;
-    const { questionIndex } = this.state;
-    const { questions } = this.props;
-    const { correct_answer: correctAnswer,
-      incorrect_answers: IncorrectAnswers,
-    } = questions[questionIndex];
-
-    const answers = [
-      <button
-        type="button"
-        onClick={ nextQuestion }
-        key="correct-answer"
-        data-testid="correct-answer"
-      >
-        { correctAnswer }
-      </button>,
-      IncorrectAnswers.map((answer, idx) => (
-        <button
-          type="button"
-          onClick={ nextQuestion }
-          key={ `wrong-answer-${idx}` }
-          data-testid={ `wrong-answer${idx}` }
-        >
-          { answer }
-        </button>
-      ))];
-    const HALF_RANDOM = 0.5;
-    return answers.sort(() => (Math.random() - HALF_RANDOM));
+    this.setState({ questionIndex: questionIndex + 1, shouldSort: true }, () => {
+      timer.startTimer();
+    });
   }
 
   render() {
-    const { buildAnswersElement } = this;
-    const { profilePictureLink, score, questionIndex } = this.state;
-    const { name, questions = [] } = this.props;
-    // console.log(questions);
+    const { nextQuestion } = this;
+    const {
+      score,
+      questionIndex,
+      seconds,
+      timer,
+      shouldSort,
+    } = this.state;
+    const { name, email, questions } = this.props;
+
+    if (questions.length === 0) return (<Redirect to="/" />);
+
     const currentQuestion = questions[questionIndex];
+    const {
+      correct_answer: correctAnswer,
+      incorrect_answers: incorrectAnswers,
+    } = currentQuestion;
+    const answers = { correctAnswer, incorrectAnswers };
 
     return (
       <>
         <header>
           <img
-            src={ profilePictureLink }
+            src={ `https://www.gravatar.com/avatar/${MD5(email).toString()}` }
             alt="profile"
             data-testid="header-profile-picture"
           />
@@ -75,18 +79,15 @@ class Game extends Component {
           <span data-testid="header-score">{ score }</span>
         </header>
         <div>
-          { currentQuestion ? (
-            <>
-              <p data-testid="question-category">{ currentQuestion.category }</p>
-              <p data-testid="question-text">{ currentQuestion.question }</p>
-              { buildAnswersElement() }
-            </>
-          ) : (
-            <>
-              <p data-testid="question-category">Carregando...</p>
-              <p data-testid="question-text">Carregando...</p>
-            </>
-          ) }
+          <p data-testid="question-category">{ currentQuestion.category }</p>
+          <p data-testid="question-text">{ currentQuestion.question }</p>
+          <AnswerButtons
+            answers={ answers }
+            nextQuestion={ nextQuestion }
+            isTimerRunning={ timer.isTimerRunning }
+            shouldSort={ shouldSort }
+          />
+          <p>{ `00:${String(seconds).padStart(2, '0')}` }</p>
         </div>
       </>
     );
