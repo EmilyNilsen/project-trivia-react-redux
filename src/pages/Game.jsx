@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
+import './Style/GameStyle.css';
 
 class Game extends Component {
   constructor(props) {
@@ -13,21 +14,36 @@ class Game extends Component {
       score: 0,
       questionIndex: 0,
       profilePictureLink: `https://www.gravatar.com/avatar/${MD5(email).toString()}`,
+      correctColor: '',
+      incorrectColor: '',
+      btnDisplay: 'none',
     };
 
     this.buildAnswersElement = this.buildAnswersElement.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.setState({
+      correctColor: 'correct',
+      incorrectColor: 'incorrect',
+      btnDisplay: 'block',
+    });
   }
 
   nextQuestion() {
     this.setState(
-      (prevState) => ({ ...prevState, questionIndex: prevState.questionIndex + 1 }),
+      (prevState) => ({ ...prevState,
+        questionIndex: prevState.questionIndex + 1,
+        correctColor: '',
+        incorrectColor: '',
+      }),
     );
   }
 
   buildAnswersElement() {
-    const { nextQuestion } = this;
-    const { questionIndex } = this.state;
+    const { questionIndex, correctColor, incorrectColor } = this.state;
     const { questions } = this.props;
     const { correct_answer: correctAnswer,
       incorrect_answers: IncorrectAnswers,
@@ -36,7 +52,8 @@ class Game extends Component {
     const answers = [
       <button
         type="button"
-        onClick={ nextQuestion }
+        onClick={ this.handleClick }
+        className={ correctColor }
         key="correct-answer"
         data-testid="correct-answer"
       >
@@ -45,18 +62,21 @@ class Game extends Component {
       IncorrectAnswers.map((answer, idx) => (
         <button
           type="button"
-          onClick={ nextQuestion }
+          onClick={ this.handleClick }
+          className={ incorrectColor }
           key={ `wrong-answer-${idx}` }
           data-testid={ `wrong-answer${idx}` }
         >
           { answer }
         </button>
       ))];
+
     const HALF_RANDOM = 0.5;
     return answers.sort(() => (Math.random() - HALF_RANDOM));
   }
 
   render() {
+    const { nextQuestion } = this;
     const { buildAnswersElement } = this;
     const { profilePictureLink, score, questionIndex } = this.state;
     const { name, questions = [] } = this.props;
@@ -80,6 +100,13 @@ class Game extends Component {
               <p data-testid="question-category">{ currentQuestion.category }</p>
               <p data-testid="question-text">{ currentQuestion.question }</p>
               { buildAnswersElement() }
+              <button
+                type="button"
+                onClick={ nextQuestion }
+              >
+                Next
+
+              </button>
             </>
           ) : (
             <>
