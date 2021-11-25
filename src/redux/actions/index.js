@@ -25,9 +25,9 @@ export const triviaError = (payload) => ({
   payload,
 });
 
-export const trivia = (questions) => ({
+export const trivia = (payload) => ({
   type: TRIVIA,
-  questions,
+  payload,
 });
 export const index = () => ({
   type: INDEX,
@@ -37,6 +37,7 @@ export const tokenThunk = () => (dispatch) => getToken()
   .then(
     (payload) => {
       dispatch(actionToken(payload));
+      return payload;
     },
 
     () => dispatch(actionTokenFail()),
@@ -45,8 +46,8 @@ export const tokenThunk = () => (dispatch) => getToken()
 export const questionThunk = (token) => (
   async (dispatch) => {
     try {
-      const json = await getQuestion(token);
-      return dispatch(trivia(json.results));
+      const response = await getQuestion(token);
+      dispatch(trivia(response));
     } catch (error) {
       return console.log(error);
     }

@@ -23,10 +23,10 @@ class Login extends Component {
 
   async handleOnClick() {
     const { name, email } = this.state;
-    const { setLogin, history, fetchtoken, token } = this.props;
+    const { setLogin, history, fetchtoken } = this.props;
     setLogin(name, email);
-    await fetchtoken();
-    localStorage.setItem('token', JSON.stringify(token));
+    const token = await fetchtoken();
+    localStorage.setItem('token', token);
     history.push('/game');
   }
 
@@ -86,10 +86,6 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  token: state.login.token,
-});
-
 const mapDispatchToProps = (dispatch) => ({
   setLogin: (name, email) => dispatch(actionLogin(name, email)),
   fetchtoken: () => dispatch(tokenThunk()),
@@ -104,4 +100,4 @@ Login.propTypes = {
   token: PropTypes.string,
 }.isRequired;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(Login);
