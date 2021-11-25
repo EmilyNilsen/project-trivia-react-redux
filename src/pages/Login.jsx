@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionLogin, tokenThunk } from '../redux/actions';
-import getToken from '../services/getToken';
 
 class Login extends Component {
   constructor(props) {
@@ -24,7 +23,7 @@ class Login extends Component {
 
   async handleOnClick() {
     const { name, email } = this.state;
-    const { setLogin, history, fetchtoken, token} = this.props;
+    const { setLogin, history, fetchtoken, token } = this.props;
     setLogin(name, email);
     await fetchtoken();
     localStorage.setItem('token', JSON.stringify(token));
@@ -87,6 +86,10 @@ class Login extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  token: state.login.token,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   setLogin: (name, email) => dispatch(actionLogin(name, email)),
   fetchtoken: () => dispatch(tokenThunk()),
@@ -94,9 +97,11 @@ const mapDispatchToProps = (dispatch) => ({
 
 Login.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  setLogin: PropTypes.func.isRequired,
-};
+    push: PropTypes.func,
+  }),
+  setLogin: PropTypes.func,
+  fetchtoken: PropTypes.func,
+  token: PropTypes.string,
+}.isRequired;
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

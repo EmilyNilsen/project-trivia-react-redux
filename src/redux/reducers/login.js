@@ -16,7 +16,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     };
   case TOKEN:
     return { ...state,
-      token: action.payload.token,
+      token: action.payload,
     };
   case TOKEN_FAIL:
     return { ...state,
