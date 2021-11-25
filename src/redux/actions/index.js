@@ -45,6 +45,17 @@ export const index = () => ({
   type: INDEX,
 });
 
+export const fetchGameInfo = () => (
+  async (dispatch) => {
+    const token = await getToken();
+    localStorage.setItem('token', token);
+    dispatch(actionToken(token));
+
+    const questions = await getQuestion(token);
+    console.log(questions);
+    dispatch(trivia(questions));
+  });
+
 export const questionThunk = (token) => (
   async (dispatch) => {
     dispatch(triviaLoading());

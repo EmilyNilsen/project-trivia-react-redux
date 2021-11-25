@@ -5,22 +5,22 @@ const INITIAL_STATE = {
   email: '',
   error: null,
   token: '',
-  loading: false,
+  isLoading: false,
 };
 
 const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case LOGIN:
-    return { ...state,
+    return {
+      ...state,
       name: action.name,
       email: action.email,
-
     };
 
   case LOADING_TOKEN:
     return {
       ...state,
-      isLoading: true,
+      isLoading: !state.isLoading,
     };
 
   case TOKEN:

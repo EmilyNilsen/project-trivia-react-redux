@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   questions: [],
   error: '',
   questionIndex: 0,
-  loading: true,
+  isLoading: false,
 };
 
 function triviaReducer(state = INITIAL_STATE, action) {
@@ -13,7 +13,7 @@ function triviaReducer(state = INITIAL_STATE, action) {
   case LOADING_TRIVIA:
     return {
       ...state,
-      isLoading: true,
+      isLoading: !state.isLoading,
     };
 
   case TRIVIA:
@@ -29,7 +29,7 @@ function triviaReducer(state = INITIAL_STATE, action) {
   case INDEX:
     return {
       ...state,
-      indexQuestion: state.questionIndex + 1,
+      questionIndex: state.questionIndex + 1,
     };
   default:
     return state;

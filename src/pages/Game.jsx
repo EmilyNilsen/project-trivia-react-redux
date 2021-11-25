@@ -60,7 +60,7 @@ class Game extends Component {
     const { buildAnswersElement } = this;
     const { profilePictureLink, score, questionIndex } = this.state;
     const { name, questions = [] } = this.props;
-    console.log(questions);
+    // console.log(questions);
     const currentQuestion = questions[questionIndex];
 
     return (
