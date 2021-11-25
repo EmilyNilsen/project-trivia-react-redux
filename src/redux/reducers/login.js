@@ -11,8 +11,9 @@ const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case LOGIN:
     return { ...state,
-      name: action.payload.name,
-      email: action.payload.email,
+      name: action.name,
+      email: action.email,
+
     };
   case TOKEN:
     return { ...state,
