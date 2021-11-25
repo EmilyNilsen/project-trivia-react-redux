@@ -8,9 +8,10 @@ export const TOKEN = 'TOKEN';
 export const TRIVIA_FAIL = 'TRIVIA_FAIL';
 export const INDEX = 'INDEX';
 
-export const actionLogin = (payload) => ({
+export const actionLogin = (name, email) => ({
   type: LOGIN,
-  payload,
+  name,
+  email,
 });
 
 export const actionToken = (payload) => ({

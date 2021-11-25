@@ -1,4 +1,4 @@
-const getToken = localStorage.getItem('token;');
+const getToken = localStorage.getItem('token');
 const URL = `https://opentdb.com/api.php?amount=5&token=${getToken}`;
 
 export default async function getQuestion() {
