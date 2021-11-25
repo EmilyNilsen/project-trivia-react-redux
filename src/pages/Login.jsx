@@ -18,24 +18,16 @@ class Login extends Component {
     this.handleOnClick = this.handleOnClick.bind(this);
   }
 
-  componentDidMount() {
-    const { getTokenRedux } = this.props;
-    getTokenRedux().then((data) => {
-      const { payload: { token } } = data;
-      const tokenStore = token;
-      const toStorage = JSON.stringify(tokenStore);
-      localStorage.setItem('token', toStorage);
-    });
-  }
-
   handleOnChange({ target: { name, value } }) {
     this.setState({ [name]: value }, () => this.isButtonDisabled());
   }
 
   async handleOnClick() {
     const { name, email } = this.state;
-    const { setLogin, history } = this.props;
+    const { setLogin, history, fetchtoken, token} = this.props;
     setLogin(name, email);
+    await fetchtoken();
+    localStorage.setItem('token', JSON.stringify(token));
     history.push('/game');
   }
 
@@ -97,7 +89,7 @@ class Login extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   setLogin: (name, email) => dispatch(actionLogin(name, email)),
-  getTokenRedux: () => dispatch(tokenThunk()),
+  fetchtoken: () => dispatch(tokenThunk()),
 });
 
 Login.propTypes = {
