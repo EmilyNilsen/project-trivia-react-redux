@@ -63,7 +63,7 @@ class Game extends Component {
   render() {
     const { buildAnswersElement } = this;
     const { profilePictureLink, score, questionIndex } = this.state;
-    const { name, questions } = this.props;
+    const { name, questions = [] } = this.props;
 
     const currentQuestion = questions[questionIndex];
 
@@ -79,9 +79,13 @@ class Game extends Component {
           <span data-testid="header-score">{ score }</span>
         </header>
         <div>
-          <p data-testid="question-category">{ currentQuestion.category }</p>
-          <p data-testid="question-text">{ currentQuestion.text }</p>
-          { buildAnswersElement() }
+          { currentQuestion && (
+            <>
+              <p data-testid="question-category">{ currentQuestion.category }</p>
+              <p data-testid="question-text">{ currentQuestion.text }</p>
+              { buildAnswersElement() }
+            </>
+          ) }
         </div>
       </>
     );
