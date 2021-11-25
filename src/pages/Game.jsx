@@ -38,6 +38,7 @@ class Game extends Component {
         questionIndex: prevState.questionIndex + 1,
         correctColor: '',
         incorrectColor: '',
+        btnDisplay: 'none',
       }),
     );
   }
@@ -78,7 +79,7 @@ class Game extends Component {
   render() {
     const { nextQuestion } = this;
     const { buildAnswersElement } = this;
-    const { profilePictureLink, score, questionIndex } = this.state;
+    const { profilePictureLink, score, questionIndex, btnDisplay } = this.state;
     const { name, questions = [] } = this.props;
     // console.log(questions);
     const currentQuestion = questions[questionIndex];
@@ -103,6 +104,8 @@ class Game extends Component {
               <button
                 type="button"
                 onClick={ nextQuestion }
+                data-testid="btn-next"
+                style={ { display: btnDisplay } }
               >
                 Next
 
