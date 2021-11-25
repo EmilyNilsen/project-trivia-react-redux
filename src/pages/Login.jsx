@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actionLogin } from '../redux/actions';
+import { actionLogin, tokenThunk } from '../redux/actions';
 import getToken from '../services/getToken';
 
 class Login extends Component {
@@ -18,6 +18,16 @@ class Login extends Component {
     this.handleOnClick = this.handleOnClick.bind(this);
   }
 
+  componentDidMount() {
+    const { getTokenRedux } = this.props;
+    getTokenRedux().then((data) => {
+      const { payload: { token } } = data;
+      const tokenStore = token;
+      const toStorage = JSON.stringify(tokenStore);
+      localStorage.setItem('token', toStorage);
+    });
+  }
+
   handleOnChange({ target: { name, value } }) {
     this.setState({ [name]: value }, () => this.isButtonDisabled());
   }
@@ -26,8 +36,6 @@ class Login extends Component {
     const { name, email } = this.state;
     const { setLogin, history } = this.props;
     setLogin(name, email);
-    const token = await getToken();
-    localStorage.setItem('token', token);
     history.push('/game');
   }
 
@@ -64,14 +72,16 @@ class Login extends Component {
           placeholder="Email"
           value={ email }
         />
-        <button
-          type="button"
-          disabled={ isDisabled }
-          data-testid="btn-play"
-          onClick={ this.handleOnClick }
-        >
-          Jogar
-        </button>
+        <Link to="/Game">
+          <button
+            type="button"
+            disabled={ isDisabled }
+            data-testid="btn-play"
+            onClick={ this.handleOnClick }
+          >
+            Jogar
+          </button>
+        </Link>
         <Link to="/Configuration">
           <button
             type="submit"
@@ -87,6 +97,7 @@ class Login extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   setLogin: (name, email) => dispatch(actionLogin(name, email)),
+  getTokenRedux: () => dispatch(tokenThunk()),
 });
 
 Login.propTypes = {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
+import { questionThunk } from '../redux/actions';
 
 class Game extends Component {
   constructor(props) {
@@ -17,6 +18,11 @@ class Game extends Component {
 
     this.buildAnswersElement = this.buildAnswersElement.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
+  }
+
+  componentDidMount() {
+    const { api, token } = this.props;
+    api(token);
   }
 
   nextQuestion() {
@@ -56,8 +62,8 @@ class Game extends Component {
 
   render() {
     const { buildAnswersElement } = this;
-    const { profilePictureLink, score, questions, questionIndex } = this.state;
-    const { name } = this.props;
+    const { profilePictureLink, score, questionIndex } = this.state;
+    const { name, questions } = this.props;
 
     const currentQuestion = questions[questionIndex];
 
@@ -82,13 +88,16 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ login, game }) => ({
-  name: login.name,
-  email: login.email,
-  questions: game.questions,
+const mapStateToProps = (state) => ({
+  name: state.login.name,
+  email: state.login.email,
+  question: state.game.questions,
+  questionIndex: state.game.questionIndex,
 });
-
-export default connect(mapStateToProps)(Game);
+const mapDispachToProps = (dispach) => ({
+  api: (payload) => dispach(questionThunk(payload)),
+});
+export default connect(mapStateToProps, mapDispachToProps)(Game);
 
 Game.propTypes = {
   name: PropTypes.string,
