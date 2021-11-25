@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
-import { questionThunk } from '../redux/actions';
 
 class Game extends Component {
   constructor(props) {
@@ -20,11 +19,6 @@ class Game extends Component {
     this.nextQuestion = this.nextQuestion.bind(this);
   }
 
-  componentDidMount() {
-    const { api, token } = this.props;
-    api(token);
-  }
-
   nextQuestion() {
     this.setState(
       (prevState) => ({ ...prevState, questionIndex: prevState.questionIndex + 1 }),
@@ -35,7 +29,9 @@ class Game extends Component {
     const { nextQuestion } = this;
     const { questionIndex } = this.state;
     const { questions } = this.props;
-    const { answers: { correctAnswer, wrongAnswers } } = questions[questionIndex];
+    const { correct_answer: correctAnswer,
+      incorrect_answers: IncorrectAnswers,
+    } = questions[questionIndex];
 
     const answers = [
       <button
@@ -46,7 +42,7 @@ class Game extends Component {
       >
         { correctAnswer }
       </button>,
-      wrongAnswers.map((answer, idx) => (
+      IncorrectAnswers.map((answer, idx) => (
         <button
           type="button"
           onClick={ nextQuestion }
@@ -64,7 +60,7 @@ class Game extends Component {
     const { buildAnswersElement } = this;
     const { profilePictureLink, score, questionIndex } = this.state;
     const { name, questions = [] } = this.props;
-
+    console.log(questions);
     const currentQuestion = questions[questionIndex];
 
     return (
@@ -82,7 +78,7 @@ class Game extends Component {
           { currentQuestion && (
             <>
               <p data-testid="question-category">{ currentQuestion.category }</p>
-              <p data-testid="question-text">{ currentQuestion.text }</p>
+              <p data-testid="question-text">{ currentQuestion.question }</p>
               { buildAnswersElement() }
             </>
           ) }
@@ -95,13 +91,11 @@ class Game extends Component {
 const mapStateToProps = (state) => ({
   name: state.login.name,
   email: state.login.email,
-  question: state.game.questions,
+  questions: state.game.questions,
   questionIndex: state.game.questionIndex,
 });
-const mapDispachToProps = (dispach) => ({
-  api: (payload) => dispach(questionThunk(payload)),
-});
-export default connect(mapStateToProps, mapDispachToProps)(Game);
+
+export default connect(mapStateToProps)(Game);
 
 Game.propTypes = {
   name: PropTypes.string,

@@ -48,6 +48,7 @@ export const questionThunk = (token) => (
   async (dispatch) => {
     try {
       const response = await getQuestion(token);
+      console.log(response);
       dispatch(trivia(response));
     } catch (error) {
       return console.log(error);
