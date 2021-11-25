@@ -1,10 +1,11 @@
-import { LOGIN, TOKEN, TOKEN_FAIL } from '../actions';
+import { LOGIN, TOKEN, TOKEN_FAIL, LOADING_TOKEN } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
   email: '',
   error: null,
   token: '',
+  loading: false,
 };
 
 const loginReducer = (state = INITIAL_STATE, action) => {
@@ -15,6 +16,13 @@ const loginReducer = (state = INITIAL_STATE, action) => {
       email: action.email,
 
     };
+
+  case LOADING_TOKEN:
+    return {
+      ...state,
+      isLoading: true,
+    };
+
   case TOKEN:
     return { ...state,
       token: action.payload,
