@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actionLogin, tokenThunk, questionThunk } from '../redux/actions';
+import { actionLogin, tokenThunk } from '../redux/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -23,12 +23,10 @@ class Login extends Component {
 
   async handleOnClick() {
     const { name, email } = this.state;
-    const { setLogin, history, fetchToken, fetchQuestions } = this.props;
+    const { setLogin, history, fetchToken } = this.props;
     setLogin(name, email);
     const token = await fetchToken();
     localStorage.setItem('token', token);
-
-    await fetchQuestions(token);
 
     history.push('/game');
   }
@@ -66,16 +64,14 @@ class Login extends Component {
           placeholder="Email"
           value={ email }
         />
-        <Link to="/Game">
-          <button
-            type="button"
-            disabled={ isDisabled }
-            data-testid="btn-play"
-            onClick={ this.handleOnClick }
-          >
-            Jogar
-          </button>
-        </Link>
+        <button
+          type="button"
+          disabled={ isDisabled }
+          data-testid="btn-play"
+          onClick={ this.handleOnClick }
+        >
+          Jogar
+        </button>
         <Link to="/Configuration">
           <button
             type="submit"
@@ -92,7 +88,6 @@ class Login extends Component {
 const mapDispatchToProps = (dispatch) => ({
   setLogin: (name, email) => dispatch(actionLogin(name, email)),
   fetchToken: () => dispatch(tokenThunk()),
-  fetchQuestions: (payload) => dispatch(questionThunk(payload)),
 });
 
 Login.propTypes = {
@@ -101,7 +96,6 @@ Login.propTypes = {
   }),
   setLogin: PropTypes.func,
   fetchToken: PropTypes.func,
-  fetchQuestions: PropTypes.func,
   token: PropTypes.string,
 }.isRequired;
 

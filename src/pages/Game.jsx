@@ -75,11 +75,16 @@ class Game extends Component {
           <span data-testid="header-score">{ score }</span>
         </header>
         <div>
-          { currentQuestion && (
+          { currentQuestion ? (
             <>
               <p data-testid="question-category">{ currentQuestion.category }</p>
               <p data-testid="question-text">{ currentQuestion.question }</p>
               { buildAnswersElement() }
+            </>
+          ) : (
+            <>
+              <p data-testid="question-category">Carregando...</p>
+              <p data-testid="question-text">Carregando...</p>
             </>
           ) }
         </div>
