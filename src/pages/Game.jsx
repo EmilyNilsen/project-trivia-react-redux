@@ -122,14 +122,7 @@ class Game extends Component {
     localStorage.setItem('state', JSON.stringify(objState));
   }
 
-  sumAssertions() {
-    const storage = (JSON.parse(localStorage.getItem('state')));
-
-    const acertos = storage.player.assertions + 1;
-
-    JSON.stringify((storage.player.assertions) = acertos);
-    localStorage.setItem('state', JSON.stringify(storage));
-  }
+  
 
   render() {
     const { handleButton, handleNext } = this;
