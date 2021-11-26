@@ -15,11 +15,20 @@ class Feedback extends React.Component {
     };
   }
 
+  addPlayerInRanking(name, score, picture) {
+    const rankingObj = { name, score, picture };
+    const rankingJson = localStorage.getItem('ranking');
+    const ranking = JSON.parse(rankingJson);
+    ranking.push(rankingObj);
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+  }
+
   render() {
     const { name } = this.props;
     const { profilePictureLink } = this.state;
     const storage = JSON.parse(localStorage.getItem('state'));
     const getScore = storage.player.score;
+    this.addPlayerInRanking(name, getScore, profilePictureLink);
     return (
       <>
         <header>
