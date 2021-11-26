@@ -18,17 +18,20 @@ class Ranking extends Component {
   render() {
     const ranking = this.sortRanking();
     return (
-      <ol>
-        {
-          ranking.map((player, index) => (
-            <li key={ index }>
-              <img src={ player.picture } alt="profile" />
-              <span data-testid={ `player-name-${index}` }>{ player.name }</span>
-              <span data-testid={ `player-score-${index}` }>{ player.score }</span>
-            </li>
-          ))
-        }
-      </ol>
+      <>
+        <h1 data-testid="ranking-title">Ranking</h1>
+        <ol>
+          {
+            ranking.map((player, index) => (
+              <li key={ index }>
+                <img src={ player.picture } alt="profile" />
+                <span data-testid={ `player-name-${index}` }>{ player.name }</span>
+                <span data-testid={ `player-score-${index}` }>{ player.score }</span>
+              </li>
+            ))
+          }
+        </ol>
+      </>
     );
   }
 }
