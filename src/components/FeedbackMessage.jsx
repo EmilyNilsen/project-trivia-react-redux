@@ -3,7 +3,7 @@ import React from 'react';
 class FeedbackMessage extends React.Component {
   feedbackMessage() {
     const storage = JSON.parse(localStorage.getItem('state'));
-    const getScore = storage.player.score;
+    const getScore = storage.player.assertions;
     const badScore = 3;
 
     if (getScore < badScore) {
