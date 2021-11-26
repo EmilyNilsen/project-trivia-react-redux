@@ -28,8 +28,8 @@ class Feedback extends React.Component {
     const { name } = this.props;
     const { profilePictureLink } = this.state;
     const storage = JSON.parse(localStorage.getItem('state'));
-    const getScore = storage.player.score;
-    this.addPlayerInRanking(name, getScore, profilePictureLink);
+    const { score, assertions } = storage.player;
+    this.addPlayerInRanking(name, score, profilePictureLink);
     return (
       <>
         <header>
@@ -39,8 +39,21 @@ class Feedback extends React.Component {
             alt="profile player"
           />
           <span data-testid="header-player-name">{ name }</span>
-          <span data-testid="header-score">{ getScore }</span>
+          <span data-testid="header-score">{ score }</span>
         </header>
+        <div>
+          <h2>Placar Final</h2>
+          <p>
+            Pontuação Final:
+            {' '}
+            <span data-testid="feedback-total-score">{ score }</span>
+          </p>
+          <p>
+            Respostas Corretas:
+            {' '}
+            <span data-testid="feedback-total-question">{ assertions }</span>
+          </p>
+        </div>
         <FeedbackMessage />
         <Link data-testid="btn-ranking" to="/ranking">Ver Ranking</Link>
       </>
