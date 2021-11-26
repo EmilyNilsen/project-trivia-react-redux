@@ -21,8 +21,6 @@ class Game extends Component {
       btnDisplay: 'none',
     };
 
-    this.nextQuestion = this.nextQuestion.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.calculateScore = this.calculateScore.bind(this);
     this.updateTimer = this.updateTimer.bind(this);
     this.handleButton = this.handleButton.bind(this);
@@ -64,7 +62,7 @@ class Game extends Component {
       () => this.setState({ seconds }));
   }
 
-  handleButton({ target }) {
+  handleButton(event) {
     const { timer } = this.state;
     timer.clearTimer();
 
@@ -72,8 +70,10 @@ class Game extends Component {
       btnDisplay: 'block',
       isTimerRunning: false,
     });
-
-    this.checkCorrectAnswer(target.innerText);
+    if (event) {
+      const { target } = event;
+      this.checkCorrectAnswer(target.innerText);
+    }
   }
 
   handleNext() {
@@ -102,9 +102,9 @@ class Game extends Component {
 
   calculateScore(question) {
     const DEFAULT_POINT_VALUE = 10;
-    const { timer } = this.state;
+    const { seconds } = this.state;
     const difficultyPoint = this.getDifficultyPoints(question.difficulty);
-    const scoreCalc = DEFAULT_POINT_VALUE + timer * difficultyPoint;
+    const scoreCalc = DEFAULT_POINT_VALUE + seconds * difficultyPoint;
     this.setState((prevState) => ({ score: prevState.score + scoreCalc }),
       () => {
         const { score } = this.state;
