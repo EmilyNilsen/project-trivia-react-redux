@@ -131,7 +131,7 @@ class Game extends Component {
     } = this.state;
     const { name, email, questions } = this.props;
 
-    if (questions.length === 0) return (<Redirect to="/" />);
+    if (questionIndex >= 5) return (<Redirect to="/" />);
 
     const currentQuestion = questions[questionIndex];
     const {
