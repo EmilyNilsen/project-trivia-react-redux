@@ -13,6 +13,7 @@ class Game extends Component {
 
     this.state = {
       score: 0,
+      assertions: 0,
       questionIndex: 0,
       timer: new Timer(),
       isTimerRunning: true,
@@ -25,6 +26,7 @@ class Game extends Component {
     this.updateTimer = this.updateTimer.bind(this);
     this.handleButton = this.handleButton.bind(this);
     this.handleNext = this.handleNext.bind(this);
+    this.sumAssertions = this.sumAssertions.bind(this);
   }
 
   componentDidMount() {
@@ -97,6 +99,7 @@ class Game extends Component {
     console.log(question);
     if (question.correct_answer === answer) {
       this.calculateScore(question);
+      this.sumAssertions(question);
     }
   }
 
@@ -117,6 +120,15 @@ class Game extends Component {
     const objState = JSON.parse(stateStorageString);
     objState.player.score = score;
     localStorage.setItem('state', JSON.stringify(objState));
+  }
+
+  sumAssertions() {
+    const storage = (JSON.parse(localStorage.getItem('state')));
+
+    const acertos = storage.player.assertions + 1;
+
+    JSON.stringify((storage.player.assertions) = acertos);
+    localStorage.setItem('state', JSON.stringify(storage));
   }
 
   render() {
