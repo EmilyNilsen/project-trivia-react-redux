@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
+import { Link } from 'react-router-dom';
 import FeedbackMessage from '../components/FeedbackMessage';
 
 class Feedback extends React.Component {
@@ -41,6 +42,7 @@ class Feedback extends React.Component {
           <span data-testid="header-score">{ getScore }</span>
         </header>
         <FeedbackMessage />
+        <Link data-testid="btn-ranking" to="/ranking">Ver Ranking</Link>
       </>
     );
   }
