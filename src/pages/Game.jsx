@@ -77,7 +77,7 @@ class Game extends Component {
   }
 
   handleNext() {
-    const { updateTimer } = this;
+    const { updateTimer, isFiveQuestion } = this;
     const { questionIndex, timer } = this.state;
 
     this.setState({
@@ -121,6 +121,8 @@ class Game extends Component {
 
   render() {
     const { handleButton, handleNext } = this;
+    const { history } = this.props;
+    console.log(history)
     const {
       score,
       questionIndex,
@@ -132,6 +134,7 @@ class Game extends Component {
     const { name, email, questions } = this.props;
 
     if (questions.length === 0) return (<Redirect to="/" />);
+    if (questionIndex === 5) return (<Redirect to="/feedback" />)
 
     const currentQuestion = questions[questionIndex];
     const {
