@@ -130,8 +130,8 @@ class Game extends Component {
       btnDisplay,
     } = this.state;
     const { name, email, questions } = this.props;
-
-    if (questions.length === 0) return (<Redirect to="/" />);
+    const numberMaxQuestions = 5;
+    if (questionIndex >= numberMaxQuestions) return (<Redirect to="/game/feedback" />);
 
     const currentQuestion = questions[questionIndex];
     const {
