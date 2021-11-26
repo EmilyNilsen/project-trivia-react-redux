@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-class Ranking extends React.Component {
+class Ranking extends Component {
+  constructor() {
+    super();
+    const rankingJson = localStorage.getItem('ranking');
+    const ranking = JSON.parse(rankingJson);
+    this.state = {
+      ranking,
+    };
+  }
+
+  sortRanking() {
+    const { ranking } = this.state;
+    return ranking.sort((a, b) => b.score - a.score);
+  }
+
   render() {
+    const ranking = this.sortRanking();
     return (
-      <p data-testid="ranking-title">Hello Ranking</p>
+      <>
+        <h1 data-testid="ranking-title">Ranking</h1>
+        <ol>
+          {
+            ranking.map((player, index) => (
+              <li key={ index }>
+                <img src={ player.picture } alt="profile" />
+                <span data-testid={ `player-name-${index}` }>{ player.name }</span>
+                <span data-testid={ `player-score-${index}` }>{ player.score }</span>
+              </li>
+            ))
+          }
+        </ol>
+      </>
     );
   }
 }

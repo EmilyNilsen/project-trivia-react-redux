@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionLogin, fetchGameInfo } from '../redux/actions';
+import createLocalStorage from '../helpers/createLocalStorage';
 
 class Login extends Component {
   constructor(props) {
@@ -26,20 +27,17 @@ class Login extends Component {
     const { setLogin, history, fetchGame } = this.props;
     setLogin(name, email);
     await fetchGame();
-    this.createStorageState(name, email);
+    createLocalStorage();
+    this.addNameAndEmailInStorage(name, email);
     history.push('/game');
   }
 
-  createStorageState(name, email) {
-    const objState = {
-      player: {
-        name,
-        assertions: '',
-        score: '',
-        gravatarEmail: email,
-      },
-    };
-    localStorage.setItem('state', JSON.stringify(objState));
+  addNameAndEmailInStorage(name, email) {
+    const stateJson = localStorage.getItem('state');
+    const state = JSON.parse(stateJson);
+    state.player.name = name;
+    state.player.gravatarEmail = email;
+    localStorage.setItem('state', JSON.stringify(state));
   }
 
   isButtonDisabled() {
