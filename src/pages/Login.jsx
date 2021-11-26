@@ -1,7 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { actionLogin, fetchGameInfo } from '../redux/actions';
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,10 +14,20 @@ export default class Login extends Component {
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.isButtonDisabled = this.isButtonDisabled.bind(this);
+    this.handleOnClick = this.handleOnClick.bind(this);
   }
 
   handleOnChange({ target: { name, value } }) {
     this.setState({ [name]: value }, () => this.isButtonDisabled());
+  }
+
+  async handleOnClick() {
+    const { name, email } = this.state;
+    const { setLogin, history, fetchGame } = this.props;
+    setLogin(name, email);
+    await fetchGame();
+
+    history.push('/game');
   }
 
   isButtonDisabled() {
@@ -54,6 +67,7 @@ export default class Login extends Component {
           type="button"
           disabled={ isDisabled }
           data-testid="btn-play"
+          onClick={ this.handleOnClick }
         >
           Jogar
         </button>
@@ -69,3 +83,18 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  setLogin: (name, email) => dispatch(actionLogin(name, email)),
+  fetchGame: () => dispatch(fetchGameInfo()),
+});
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  setLogin: PropTypes.func,
+  token: PropTypes.string,
+}.isRequired;
+
+export default connect(null, mapDispatchToProps)(Login);
