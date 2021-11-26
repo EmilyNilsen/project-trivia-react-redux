@@ -121,8 +121,6 @@ class Game extends Component {
 
   render() {
     const { handleButton, handleNext } = this;
-    const { history } = this.props;
-    console.log(history);
     const {
       score,
       questionIndex,
