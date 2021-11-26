@@ -21,6 +21,7 @@ class Game extends Component {
       btnDisplay: 'none',
     };
 
+    this.calculateScore = this.calculateScore.bind(this);
     this.updateTimer = this.updateTimer.bind(this);
     this.handleButton = this.handleButton.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -38,6 +39,22 @@ class Game extends Component {
     timer.clearTimer();
   }
 
+  getDifficultyPoints(difficulty) {
+    const EASY = 1;
+    const MEDIUM = 2;
+    const HARD = 3;
+    switch (difficulty) {
+    case 'easy':
+      return EASY;
+    case 'medium':
+      return MEDIUM;
+    case 'hard':
+      return HARD;
+    default:
+      return 0;
+    }
+  }
+
   updateTimer(seconds) {
     if (seconds === 0) this.handleButton();
 
@@ -45,7 +62,7 @@ class Game extends Component {
       () => this.setState({ seconds }));
   }
 
-  handleButton() {
+  handleButton(event) {
     const { timer } = this.state;
     timer.clearTimer();
 
@@ -53,6 +70,10 @@ class Game extends Component {
       btnDisplay: 'block',
       isTimerRunning: false,
     });
+    if (event) {
+      const { target } = event;
+      this.checkCorrectAnswer(target.innerText);
+    }
   }
 
   handleNext() {
@@ -67,6 +88,35 @@ class Game extends Component {
     }, () => {
       timer.startTimer(updateTimer);
     });
+  }
+
+  checkCorrectAnswer(answer) {
+    const { questions } = this.props;
+    const { questionIndex } = this.state;
+    const question = questions[questionIndex];
+    console.log(question);
+    if (question.correct_answer === answer) {
+      this.calculateScore(question);
+    }
+  }
+
+  calculateScore(question) {
+    const DEFAULT_POINT_VALUE = 10;
+    const { seconds } = this.state;
+    const difficultyPoint = this.getDifficultyPoints(question.difficulty);
+    const scoreCalc = DEFAULT_POINT_VALUE + seconds * difficultyPoint;
+    this.setState((prevState) => ({ score: prevState.score + scoreCalc }),
+      () => {
+        const { score } = this.state;
+        this.saveScoreInLocalStorage(score);
+      });
+  }
+
+  saveScoreInLocalStorage(score) {
+    const stateStorageString = localStorage.getItem('state');
+    const objState = JSON.parse(stateStorageString);
+    objState.player.score = score;
+    localStorage.setItem('state', JSON.stringify(objState));
   }
 
   render() {

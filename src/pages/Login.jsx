@@ -26,8 +26,20 @@ class Login extends Component {
     const { setLogin, history, fetchGame } = this.props;
     setLogin(name, email);
     await fetchGame();
-
+    this.createStorageState(name, email);
     history.push('/game');
+  }
+
+  createStorageState(name, email) {
+    const objState = {
+      player: {
+        name,
+        assertions: '',
+        score: '',
+        gravatarEmail: email,
+      },
+    };
+    localStorage.setItem('state', JSON.stringify(objState));
   }
 
   isButtonDisabled() {
