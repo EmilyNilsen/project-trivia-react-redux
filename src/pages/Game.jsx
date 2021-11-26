@@ -1,31 +1,44 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { MD5 } from 'crypto-js';
+import Timer from '../components/timer';
+import AnswerButtons from '../components/AnswerButtons';
 import './Style/GameStyle.css';
+import Header from '../components/Header';
 
 class Game extends Component {
   constructor(props) {
     super(props);
 
-    const { email } = this.props;
-
     this.state = {
       score: 0,
       questionIndex: 0,
-      profilePictureLink: `https://www.gravatar.com/avatar/${MD5(
-        email,
-      ).toString()}`,
-      correctColor: '',
-      incorrectColor: '',
+      timer: new Timer(),
+      isTimerRunning: true,
+      seconds: 30,
+      shouldSort: true,
       btnDisplay: 'none',
-      timer: 17,
     };
 
-    this.buildAnswersElement = this.buildAnswersElement.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.calculateScore = this.calculateScore.bind(this);
+    this.updateTimer = this.updateTimer.bind(this);
+    this.handleButton = this.handleButton.bind(this);
+    this.handleNext = this.handleNext.bind(this);
+  }
+
+  componentDidMount() {
+    const { updateTimer } = this;
+    const { timer } = this.state;
+
+    timer.startTimer(updateTimer);
+  }
+
+  componentWillUnmount() {
+    const { timer } = this.state;
+    timer.clearTimer();
   }
 
   getDifficultyPoints(difficulty) {
@@ -44,15 +57,37 @@ class Game extends Component {
     }
   }
 
-  handleClick({ target }) {
-    this.setState(
-      {
-        correctColor: 'correct',
-        incorrectColor: 'incorrect',
-        btnDisplay: 'block',
-      },
-    );
+  updateTimer(seconds) {
+    if (seconds === 0) this.handleButton();
+
+    this.setState({ shouldSort: false },
+      () => this.setState({ seconds }));
+  }
+
+  handleButton({ target }) {
+    const { timer } = this.state;
+    timer.clearTimer();
+
+    this.setState({
+      btnDisplay: 'block',
+      isTimerRunning: false,
+    });
+
     this.checkCorrectAnswer(target.innerText);
+  }
+
+  handleNext() {
+    const { updateTimer } = this;
+    const { questionIndex, timer } = this.state;
+
+    this.setState({
+      questionIndex: questionIndex + 1,
+      shouldSort: true,
+      btnDisplay: 'none',
+      isTimerRunning: true,
+    }, () => {
+      timer.startTimer(updateTimer);
+    });
   }
 
   checkCorrectAnswer(answer) {
@@ -84,91 +119,48 @@ class Game extends Component {
     localStorage.setItem('state', JSON.stringify(objState));
   }
 
-  nextQuestion() {
-    this.setState((prevState) => ({
-      ...prevState,
-      questionIndex: prevState.questionIndex + 1,
-      correctColor: '',
-      incorrectColor: '',
-      btnDisplay: 'none',
-    }));
-  }
+  render() {
+    const { handleButton, handleNext } = this;
+    const {
+      score,
+      questionIndex,
+      seconds,
+      isTimerRunning,
+      shouldSort,
+      btnDisplay,
+    } = this.state;
+    const { name, email, questions } = this.props;
 
-  buildAnswersElement() {
-    const { questionIndex, correctColor, incorrectColor } = this.state;
-    const { questions } = this.props;
+    if (questions.length === 0) return (<Redirect to="/" />);
+
+    const currentQuestion = questions[questionIndex];
     const {
       correct_answer: correctAnswer,
-      incorrect_answers: IncorrectAnswers,
-    } = questions[questionIndex];
-
-    const answers = [
-      <button
-        type="button"
-        onClick={ this.handleClick }
-        className={ correctColor }
-        key="correct-answer"
-        data-testid="correct-answer"
-      >
-        {correctAnswer}
-      </button>,
-      IncorrectAnswers.map((answer, idx) => (
-        <button
-          type="button"
-          onClick={ this.handleClick }
-          className={ incorrectColor }
-          key={ `wrong-answer-${idx}` }
-          data-testid={ `wrong-answer${idx}` }
-        >
-          {answer}
-        </button>
-      )),
-    ];
-
-    const HALF_RANDOM = 0.5;
-    return answers.sort(() => Math.random() - HALF_RANDOM);
-  }
-
-  render() {
-    const { nextQuestion } = this;
-    const { buildAnswersElement } = this;
-    const { profilePictureLink, score, questionIndex, btnDisplay } = this.state;
-    const { name, questions = [] } = this.props;
-    // console.log(questions);
-    const currentQuestion = questions[questionIndex];
+      incorrect_answers: incorrectAnswers,
+    } = currentQuestion;
+    const answers = { correctAnswer, incorrectAnswers };
 
     return (
       <>
-        <header>
-          <img
-            src={ profilePictureLink }
-            alt="profile"
-            data-testid="header-profile-picture"
-          />
-          <span data-testid="header-player-name">{name}</span>
-          <span data-testid="header-score">{score}</span>
-        </header>
+        <Header name={ name } email={ email } score={ score } />
         <div>
-          {currentQuestion ? (
-            <>
-              <p data-testid="question-category">{currentQuestion.category}</p>
-              <p data-testid="question-text">{currentQuestion.question}</p>
-              {buildAnswersElement()}
-              <button
-                type="button"
-                onClick={ nextQuestion }
-                data-testid="btn-next"
-                style={ { display: btnDisplay } }
-              >
-                Next
-              </button>
-            </>
-          ) : (
-            <>
-              <p data-testid="question-category">Carregando...</p>
-              <p data-testid="question-text">Carregando...</p>
-            </>
-          )}
+          <p data-testid="question-category">{ currentQuestion.category }</p>
+          <p data-testid="question-text">{ currentQuestion.question }</p>
+          <AnswerButtons
+            answers={ answers }
+            handleButton={ handleButton }
+            isTimerRunning={ isTimerRunning }
+            shouldSort={ shouldSort }
+          />
+          <p>{ `00:${String(seconds).padStart(2, '0')}` }</p>
+          <button
+            type="button"
+            onClick={ handleNext }
+            data-testid="btn-next"
+            style={ { display: btnDisplay } }
+          >
+            Next
+          </button>
         </div>
       </>
     );

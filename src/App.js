@@ -10,9 +10,9 @@ class App extends Component {
     return (
       <Switch>
 
-        <Route exact path="/game" component={ () => <Game /> } />
+        <Route exact path="/game" component={ Game } />
         <Route exact path="/" component={ Login } />
-        <Route exact patch="/Configuration" component={ Configuration } />
+        <Route exact path="/Configuration" component={ Configuration } />
       </Switch>
     );
   }
