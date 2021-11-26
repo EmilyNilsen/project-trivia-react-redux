@@ -4,15 +4,15 @@ class FeedbackMessage extends React.Component {
   feedbackMessage() {
     const storage = JSON.parse(localStorage.getItem('state'));
     const getAssertions = storage.player.assertions;
-    const assertions = 3;
+    const assertionsNum = 3;
 
-    if (getAssertions < assertions) {
+    if (getAssertions < assertionsNum) {
       return (
         <h1 data-testid="feedback-text">
           Podia ser melhor...
         </h1>);
     }
-    if (getAssertions >= assertions) {
+    if (getAssertions >= assertionsNum) {
       return (
         <h1 data-testid="feedback-text">
           Mandou bem!

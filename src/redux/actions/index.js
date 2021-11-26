@@ -20,6 +20,7 @@ export const actionToken = (payload) => ({
   type: TOKEN,
   payload,
 });
+
 export const actionTokenFail = () => ({
   type: TOKEN_FAIL,
 });

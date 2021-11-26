@@ -13,6 +13,7 @@ class Game extends Component {
 
     this.state = {
       score: 0,
+      assertions: 0,
       questionIndex: 0,
       timer: new Timer(),
       isTimerRunning: true,
@@ -105,17 +106,21 @@ class Game extends Component {
     const { seconds } = this.state;
     const difficultyPoint = this.getDifficultyPoints(question.difficulty);
     const scoreCalc = DEFAULT_POINT_VALUE + seconds * difficultyPoint;
-    this.setState((prevState) => ({ score: prevState.score + scoreCalc }),
-      () => {
-        const { score } = this.state;
-        this.saveScoreInLocalStorage(score);
-      });
+    this.setState((prevState) => ({ score: prevState.score + scoreCalc,
+      assertions: prevState.assertions + 1,
+
+    }),
+    () => {
+      const { score, assertions } = this.state;
+      this.saveScoreInLocalStorage(score, assertions);
+    });
   }
 
-  saveScoreInLocalStorage(score) {
+  saveScoreInLocalStorage(score, assertions) {
     const stateStorageString = localStorage.getItem('state');
     const objState = JSON.parse(stateStorageString);
     objState.player.score = score;
+    objState.player.assertions = assertions;
     localStorage.setItem('state', JSON.stringify(objState));
   }
 
