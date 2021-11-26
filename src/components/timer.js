@@ -26,10 +26,12 @@ export default class Timer {
 
   clearTimer() {
     clearInterval(this.state.timer);
+    this.state.timer = undefined;
   }
 
   isTimerRunning() {
-    const { seconds } = this.state;
-    return seconds > 0;
+    const { timer, seconds } = this.state;
+    console.log(timer);
+    return seconds > 0 || timer !== undefined;
   }
 }

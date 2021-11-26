@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { MD5 } from 'crypto-js';
 import Timer from '../components/timer';
 import AnswerButtons from '../components/AnswerButtons';
+import './Style/GameStyle.css';
+import Header from '../components/Header';
 
 class Game extends Component {
   constructor(props) {
@@ -14,12 +15,15 @@ class Game extends Component {
       score: 0,
       questionIndex: 0,
       timer: new Timer(),
+      isTimerRunning: true,
       seconds: 30,
       shouldSort: true,
+      btnDisplay: 'none',
     };
 
-    this.nextQuestion = this.nextQuestion.bind(this);
     this.updateTimer = this.updateTimer.bind(this);
+    this.handleButton = this.handleButton.bind(this);
+    this.handleNext = this.handleNext.bind(this);
   }
 
   componentDidMount() {
@@ -35,26 +39,45 @@ class Game extends Component {
   }
 
   updateTimer(seconds) {
+    if (seconds === 0) this.handleButton();
+
     this.setState({ shouldSort: false },
       () => this.setState({ seconds }));
   }
 
-  nextQuestion() {
+  handleButton() {
+    const { timer } = this.state;
+    timer.clearTimer();
+
+    this.setState({
+      btnDisplay: 'block',
+      isTimerRunning: false,
+    });
+  }
+
+  handleNext() {
+    const { updateTimer } = this;
     const { questionIndex, timer } = this.state;
 
-    this.setState({ questionIndex: questionIndex + 1, shouldSort: true }, () => {
-      timer.startTimer();
+    this.setState({
+      questionIndex: questionIndex + 1,
+      shouldSort: true,
+      btnDisplay: 'none',
+      isTimerRunning: true,
+    }, () => {
+      timer.startTimer(updateTimer);
     });
   }
 
   render() {
-    const { nextQuestion } = this;
+    const { handleButton, handleNext } = this;
     const {
       score,
       questionIndex,
       seconds,
-      timer,
+      isTimerRunning,
       shouldSort,
+      btnDisplay,
     } = this.state;
     const { name, email, questions } = this.props;
 
@@ -69,25 +92,25 @@ class Game extends Component {
 
     return (
       <>
-        <header>
-          <img
-            src={ `https://www.gravatar.com/avatar/${MD5(email).toString()}` }
-            alt="profile"
-            data-testid="header-profile-picture"
-          />
-          <span data-testid="header-player-name">{ name }</span>
-          <span data-testid="header-score">{ score }</span>
-        </header>
+        <Header name={ name } email={ email } score={ score } />
         <div>
           <p data-testid="question-category">{ currentQuestion.category }</p>
           <p data-testid="question-text">{ currentQuestion.question }</p>
           <AnswerButtons
             answers={ answers }
-            nextQuestion={ nextQuestion }
-            isTimerRunning={ timer.isTimerRunning }
+            handleButton={ handleButton }
+            isTimerRunning={ isTimerRunning }
             shouldSort={ shouldSort }
           />
           <p>{ `00:${String(seconds).padStart(2, '0')}` }</p>
+          <button
+            type="button"
+            onClick={ handleNext }
+            data-testid="btn-next"
+            style={ { display: btnDisplay } }
+          >
+            Next
+          </button>
         </div>
       </>
     );

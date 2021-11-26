@@ -8,7 +8,7 @@ class AnswerButtons extends Component {
         correctAnswer,
         incorrectAnswers,
       },
-      nextQuestion,
+      handleButton,
       isTimerRunning,
       shouldSort,
     } = this.props;
@@ -16,20 +16,22 @@ class AnswerButtons extends Component {
     const buttons = [
       <button
         type="button"
-        onClick={ nextQuestion }
+        className={ !isTimerRunning ? 'correct' : undefined }
+        onClick={ handleButton }
         key="correct-answer"
         data-testid="correct-answer"
-        disabled={ !isTimerRunning() }
+        disabled={ !isTimerRunning }
       >
         { correctAnswer }
       </button>,
       incorrectAnswers.map((answer, idx) => (
         <button
           type="button"
-          onClick={ nextQuestion }
+          className={ !isTimerRunning ? 'incorrect' : undefined }
+          onClick={ handleButton }
           key={ `wrong-answer-${idx}` }
           data-testid={ `wrong-answer${idx}` }
-          disabled={ !isTimerRunning() }
+          disabled={ !isTimerRunning }
         >
           { answer }
         </button>
