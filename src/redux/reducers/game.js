@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   error: '',
   questionIndex: 0,
   isLoading: false,
+  asserts: 0,
 };
 
 function triviaReducer(state = INITIAL_STATE, action) {
