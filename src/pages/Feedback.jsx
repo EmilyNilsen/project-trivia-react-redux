@@ -55,6 +55,8 @@ class Feedback extends React.Component {
           </p>
         </div>
         <FeedbackMessage />
+        <Link data-testid="btn-play-again" to="/">Jogar novamente</Link>
+        {' '}
         <Link data-testid="btn-ranking" to="/ranking">Ver Ranking</Link>
       </>
     );
