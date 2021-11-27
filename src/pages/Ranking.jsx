@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ButtonRanking from '../components/buttonRanking';
 
 class Ranking extends Component {
   constructor() {
@@ -31,6 +32,7 @@ class Ranking extends Component {
             ))
           }
         </ol>
+        <ButtonRanking />
       </>
     );
   }
