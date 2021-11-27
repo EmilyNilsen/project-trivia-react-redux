@@ -95,9 +95,10 @@ class Game extends Component {
     const { questions } = this.props;
     const { questionIndex } = this.state;
     const question = questions[questionIndex];
-    console.log(question);
+
     if (question.correct_answer === answer) {
       this.calculateScore(question);
+      this.saveAssertionsInLocalStorage();
     }
   }
 
@@ -121,6 +122,15 @@ class Game extends Component {
     const objState = JSON.parse(stateStorageString);
     objState.player.score = score;
     objState.player.assertions = assertions;
+    localStorage.setItem('state', JSON.stringify(objState));
+  }
+
+  saveAssertionsInLocalStorage() {
+    const stateStorageString = localStorage.getItem('state');
+    const objState = JSON.parse(stateStorageString);
+    const { assertions: prevAssertions } = objState.player;
+
+    objState.player.assertions = prevAssertions + 1;
     localStorage.setItem('state', JSON.stringify(objState));
   }
 
