@@ -21,3 +21,27 @@ html {
   font-family: 'Gloria Hallelujah', cursive;
   font-size: 5rem;
 }
+
+.container-header {
+  display: flex;
+  flex-direction: row;
+  color: aliceblue;
+  justify-content: space-between;
+  height: 5rem;
+  background-color: #363636;
+}
+
+.title-game {
+  color: white;
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 1.55rem;
+}
+
+.infos-user {
+  margin-right: 2rem;
+  color: white;
+}
+
+.image-user {
+  margin-left: 2rem;
+}

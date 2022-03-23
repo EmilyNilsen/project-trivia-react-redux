@@ -168,7 +168,7 @@ class Game extends Component {
             isTimerRunning={ isTimerRunning }
             shouldSort={ shouldSort }
           />
-          <p>{ `00:${String(seconds).padStart(2, '0')}` }</p>
+          {/* <p>{ `00:${String(seconds).padStart(2, '0')}` }</p> */}
           <button
             type="button"
             onClick={ handleNext }

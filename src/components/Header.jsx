@@ -8,13 +8,19 @@ export default class Header extends Component {
 
     return (
       <header>
-        <img
-          src={ `https://www.gravatar.com/avatar/${MD5(email).toString()}` }
-          alt="profile"
-          data-testid="header-profile-picture"
-        />
-        <span data-testid="header-player-name">{ name }</span>
-        <span data-testid="header-score">{ score }</span>
+        <div className="container-header">
+            <img
+              src={ `https://www.gravatar.com/avatar/${MD5(email).toString()}` }
+              alt="profile"
+              data-testid="header-profile-picture"
+              className="image-user"
+              />
+            <h3 className='title-game'>TRIVIA</h3>
+            <div className="infos-user">
+              <p>Player: <span data-testid="header-player-name">{ name }</span></p>
+              <p>Pontuação:<span data-testid="header-score">{ score }</span></p>
+          </div>
+        </div>
       </header>
     );
   }
