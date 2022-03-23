@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actionLogin, fetchGameInfo } from '../redux/actions';
 import createLocalStorage from '../helpers/createLocalStorage';
@@ -56,7 +55,9 @@ class Login extends Component {
   render() {
     const { name, email, isDisabled } = this.state;
     return (
-      <div>
+      <div className='container-login'>
+        <h1 className='title-login'>TRIVIA</h1>
+        <div className='container-itens-login'>
         <input
           type="text"
           onChange={ this.handleOnChange }
@@ -64,7 +65,9 @@ class Login extends Component {
           data-testid="input-player-name"
           placeholder="Nome"
           value={ name }
+          className='input-name'
         />
+        <br/>
         <input
           type="email"
           onChange={ this.handleOnChange }
@@ -73,6 +76,7 @@ class Login extends Component {
           placeholder="Email"
           value={ email }
         />
+        <br/>
         <button
           type="button"
           disabled={ isDisabled }
@@ -81,14 +85,7 @@ class Login extends Component {
         >
           Jogar
         </button>
-        <Link to="/Configuration">
-          <button
-            type="submit"
-            data-testid="btn-settings"
-          >
-            Configurações
-          </button>
-        </Link>
+        </div>
       </div>
     );
   }

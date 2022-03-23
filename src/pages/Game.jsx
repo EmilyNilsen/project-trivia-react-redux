@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import Timer from '../components/timer';
 import AnswerButtons from '../components/AnswerButtons';
-import './Style/GameStyle.css';
+import './CSS/GameStyle.css';
 import Header from '../components/Header';
 
 class Game extends Component {
